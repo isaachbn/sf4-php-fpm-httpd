@@ -25,5 +25,3 @@ RUN ln -snf /usr/share/zoneinfo/America/Recife /etc/localtime && echo America/Re
 RUN echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && \
     echo "pt_BR.UTF-8 UTF-8" >> /etc/locale.gen && \
     locale-gen
-
-EXPOSE $PORT_FPM
