@@ -1,0 +1,41 @@
+version: '3'
+
+services:
+  php:
+    build: docker/php
+    container_name: php_${CONTAINER_NAME}
+    ports:
+      - ${PORT_FPM}:${PORT_FPM}
+    env_file:
+      - .env
+    volumes:
+      - ./:${WORKING_DIR}
+    working_dir: ${WORKING_DIR}
+    networks:
+      - backend
+
+  apache:
+    build: docker/apache
+    container_name: www_${CONTAINER_NAME}
+    ports:
+      - ${PORT_HTTP}:${PORT_HTTP}
+      - ${PORT_HTTPS}:${PORT_HTTPS}
+    env_file:
+      - .env
+    volumes:
+      - ./var/log:/var/log/apache2
+      - ./docker/apache/conf/httpd-vhosts.conf:/usr/local/apache2/conf/extra/httpd-vhosts.conf
+      - ./docker/apache/conf/httpd-ssl.conf:/usr/local/apache2/conf/extra/httpd-ssl.conf
+      - ./:${WORKING_DIR}
+      - ./docker/apache/conf/server.crt:/usr/local/apache2/conf/server.crt
+      - ./docker/apache/conf/server.key:/usr/local/apache2/conf/server.key
+      - ./docker/apache/conf/httpd.conf:/usr/local/apache2/conf/httpd.conf
+    depends_on:
+      - php
+    networks:
+      - frontend
+      - backend
+
+networks:
+  frontend:
+  backend:
