@@ -5,7 +5,7 @@ services:
     build: docker/php
     container_name: php_${CONTAINER_NAME}
     ports:
-      - ${PORT_FPM}:${PORT_FPM}
+      - ${PORT_FPM}:9000
     env_file:
       - .env
     volumes:
