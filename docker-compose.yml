@@ -27,8 +27,8 @@ services:
       - ./docker/apache/conf/httpd-vhosts.conf:/usr/local/apache2/conf/extra/httpd-vhosts.conf
       - ./docker/apache/conf/httpd-ssl.conf:/usr/local/apache2/conf/extra/httpd-ssl.conf
       - ./:${WORKING_DIR}
-      - ./docker/apache/conf/server.crt:/usr/local/apache2/conf/server.crt
-      - ./docker/apache/conf/server.key:/usr/local/apache2/conf/server.key
+      - ./docker/apache/conf/server.crt.dist:/usr/local/apache2/conf/server.crt
+      - ./docker/apache/conf/server.key.dist:/usr/local/apache2/conf/server.key
       - ./docker/apache/conf/httpd.conf:/usr/local/apache2/conf/httpd.conf
     depends_on:
       - php
