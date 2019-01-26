@@ -21,7 +21,7 @@ services:
     env_file:
       - .env
     volumes:
-      - ./var/log:/var/log/apache2
+      - ./var/log/apache:/var/log/apache2
       - ./docker/apache/conf/httpd-vhosts.conf:/usr/local/apache2/conf/extra/httpd-vhosts.conf
       - ./docker/apache/conf/httpd-ssl.conf:/usr/local/apache2/conf/extra/httpd-ssl.conf
       - ./:${WORKING_DIR}:ro
@@ -30,3 +30,18 @@ services:
       - ./docker/apache/conf/httpd.conf:/usr/local/apache2/conf/httpd.conf
     depends_on:
       - php
+
+  elk:
+    image: willdurand/elk
+    container_name: elk_${CONTAINER_NAME}
+    ports:
+      - ${PORT_ELK}:80
+    env_file:
+      - .env
+    volumes:
+      - ./docker/elk/logstash:/etc/logstash
+      - ./docker/elk/logstash/patterns:/opt/logstash/patterns
+      - ./var/log:/var/log/logstash
+    depends_on:
+      - php
+      - apache

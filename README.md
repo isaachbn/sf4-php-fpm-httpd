@@ -12,10 +12,6 @@ Run:
 ```
 docker-compose up -d
 ```
-and
-```
-docker-compose run php composer install
-```
 
 If you already apache server in your environment, change the ports in the `.env`
 
