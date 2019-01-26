@@ -14,6 +14,20 @@ ENV PHP_XDEBUG_PROFILER_ENABLE ${PHP_XDEBUG_PROFILER_ENABLE:-0}
 ENV PHP_XDEBUG_PROFILER_OUTPUT_DIR ${PHP_XDEBUG_PROFILER_OUTPUT_DIR:-"/tmp"}
 ENV PHP_EXTRA_CONFIGURE_ARGS --enable-fpm --with-fpm-user=www-data --with-fpm-group=www-data
 
+RUN apk --no-cache add tzdata ca-certificates wget && \
+    wget -q -O /etc/apk/keys/sgerrand.rsa.pub https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub && \
+    wget https://github.com/sgerrand/alpine-pkg-glibc/releases/download/2.25-r0/glibc-2.25-r0.apk && \
+    wget https://github.com/sgerrand/alpine-pkg-glibc/releases/download/2.25-r0/glibc-bin-2.25-r0.apk && \
+    wget https://github.com/sgerrand/alpine-pkg-glibc/releases/download/2.25-r0/glibc-i18n-2.25-r0.apk && \
+    apk add glibc-bin-2.25-r0.apk glibc-i18n-2.25-r0.apk glibc-2.25-r0.apk
+
+COPY ./locale.md /locale.md
+RUN cat locale.md | xargs -i /usr/glibc-compat/bin/localedef -i {} -f UTF-8 {}.UTF-8
+ENV LANG=pt_BR.UTF-8 \
+    LANGUAGE=pt_BR.UTF-8
+
+RUN rm -rf /var/cache/apk/*
+
 RUN set -ex \
   	&& apk update \
     && apk add --no-cache bash git zip curl openssh-client icu libpng freetype libjpeg-turbo postgresql-dev libffi-dev libsodium \
@@ -28,6 +42,12 @@ RUN set -ex \
     && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
     && apk del build-dependencies \
     && rm -rf /tmp/*
+
+# Set timezone
+RUN ln -snf /usr/share/zoneinfo/America/Recife /etc/localtime && echo America/Recife > /etc/timezone \
+    && printf '[PHP]\ndate.timezone = "%s"\n', America/Recife > /usr/local/etc/php/conf.d/tzone.ini \
+    && "date"
+
 
 COPY php.ini /usr/local/etc/php/php.ini
 COPY php-fpm-pool.conf 	/usr/local/etc/php/pool.d/www.conf
