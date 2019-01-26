@@ -16,3 +16,9 @@ RUN set -ex \
     && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
     && apk del build-dependencies \
     && rm -rf /tmp/*
+
+COPY php.ini /usr/local/etc/php/php.ini
+COPY php-fpm-pool.conf 	/usr/local/etc/php/pool.d/www.conf
+COPY xdebug.ini /usr/local/etc/php/conf.d/xdebug-dev.ini
+USER www-data
+CMD ["php-fpm"]

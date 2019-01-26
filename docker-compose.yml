@@ -6,11 +6,6 @@ services:
     container_name: php_${CONTAINER_NAME}
     ports:
       - ${PORT_FPM}:9000
-    environment:
-      # If you develop on Mac OSX change this to remote_host=docker.for.mac.localhost
-      # If you develop on Linux change this to remote_host=172.17.0.1
-      XDEBUG_CONFIG: "remote_host=docker.for.win.localhost idekey=IDE_XDEBUG"
-      PHP_IDE_CONFIG: "serverName=docker-server"
     env_file:
       - .env
     volumes:
